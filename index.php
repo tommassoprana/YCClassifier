@@ -1,11 +1,4 @@
 <?php
-//"url": "https://gateway-a.watsonplatform.net/visual-recognition/api",
-//"note": "It may take up to 5 minutes for this key to become active",
-//"api_key": "0f289cb41f07a65d013d6e9acd53b356ea01079b"
-
-// curl -X POST --header 'Content-Type: multipart/form-data' --header 'Accept: application/json' -F name=test  'https://watson-api-explorer.mybluemix.net/visual-recognition/api/v3/classifiers?api_key=0f289cb41f07a65d013d6e9acd53b356ea01079b&version=2016-05-20'
-
-
 class myClassifier {
 
 	private $urlBase;
@@ -13,7 +6,7 @@ class myClassifier {
 
 	function __construct () {
 		$this->_urlBase = "https://watson-api-explorer.mybluemix.net/visual-recognition";
-		$this->_urlApi = "0f289cb41f07a65d013d6e9acd53b356ea01079b";
+		$this->_urlApi = "mypersonalkey";
 	}
 
 	function callWatson ($url, $data) {
