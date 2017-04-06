@@ -1,18 +1,19 @@
 // npm install watson-developer-cloud --save
-// npm install fast-csv
+// npm i --save csvtojson
 
-var fs = require('fast-csv');
-var stream = fs.createReadStream("training_set.csv");
- 
-var csvStream = csv()
-    .on("data", function(data){
-         console.log(data);
-    })
-    .on("end", function(){
-         console.log("done");
-    });
- 
-stream.pipe(csvStream);
+var fs = require('fs');
+const csvFilePath='training_set.csv'
+const csv=require('csvtojson')
+csv()
+.fromFile(csvFilePath)
+.on('json',(jsonObj)=>{
+    // combine csv header row and csv line to a json object 
+    // jsonObj.a ==> 1 or 4 
+    console.log(jsonObj)
+})
+.on('done',(error)=>{
+    console.log('end')
+})
 
 /*
 var watson = require('watson-developer-cloud');
