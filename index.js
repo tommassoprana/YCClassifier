@@ -7,9 +7,10 @@ var fs = require('fs'),
     csv = require('csvtojson'),
     request = require('request'),
     archiver = require('archiver'),
+    async = require('async'),
     watson = require('watson-developer-cloud'),
     counter = 0,
-    counterLimit = 25;
+    counterLimit = 5;
 
 const csvFilePath = "training_set.csv",
       baseUrlImg = "http://ypic.yoox.biz/ypic/yoox/-resize/180/f/";
@@ -23,9 +24,9 @@ var visual_recognition = watson.visual_recognition({
 
 /* METHODS ****************************/
 
-var download = function(uri, filename, callback){
+var download = function(counter, uri, filename, callback){
   request.head(uri, function(err, res, body){
-    //console.log(filename+' ('+res.headers['content-type']+') ' + res.headers['content-length']);
+    //console.log(counter, filename+' ('+res.headers['content-type']+') ' + res.headers['content-length']);
     request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
   });
 };
@@ -97,25 +98,99 @@ csv()
   //zipIt('zip/final.zip');
   //console.log(rawData);
 
-  for (var k in rawData){
+  for (var k in rawData) {
     var dir = './pool/'+k;
 
-    if (!fs.existsSync(dir)){
+    if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir);
     }
     counter = 0;
 
+    function asyncFunction (item, cb) {
+      var uri = baseUrlImg+item,
+            fileName = "./pool/"+k+"/"+item;
+
+        counter ++;
+        if (counter <= counterLimit) {
+          writeStream = fs.createWriteStream(fileName);
+          request(uri).pipe(writeStream);
+        }
+        cb();
+    }
+
+    let requests = rawData[k].map((item) => {
+        return new Promise((resolve) => {
+          asyncFunction(item, resolve);
+        });
+    })
+
+    Promise.all(requests).then(() => {
+      console.log("Zipping:..." + k);
+      //zipIt('pool/'+k, 'zip/'+k+'_positive_examples.zip');
+    });
+  }
+
+
+    /*
+    async.each(rawData[k], function(file, callback) {
+        var uri = baseUrlImg+file,
+            fileName = "./pool/"+k+"/"+file;
+
+        counter ++;
+        if (counter <= counterLimit) {
+          writeStream = fs.createWriteStream(fileName);
+          request(uri).pipe(writeStream); 
+          writeStream.on('close', function() {
+              if (counter <= counterLimit) {
+                console.log('finished');
+              }
+          });
+        }
+       
+       
+    }, function(err){
+        if( err ) {
+          console.log(err);
+        } else {
+          console.log('end');
+        }
+    }); 
+    */
+    /*
+    async.each(rawData[k], function (file, callback) {
+      counter ++;
+      if (counter <= counterLimit) {
+          var uri = baseUrlImg+file,
+              fileName = "./pool/"+k+"/"+file;
+          fs.writeFile("./pool/"+k+"/"+file, baseUrlImg+file, function (err) {
+              if (err) { console.log(err); }
+              else { console.log(file + '.json was updated.'); }
+              callback();
+          });
+          
+      }
+    }, function (err) {
+        if (err) { console.log('A file failed to process'); }
+        else {
+          //zipIt('pool/'+k, 'zip/'+k+'_positive_examples.zip');
+          console.log(k+': ('+k.length+') files processed successfully');
+        }
+    });
+    */
+    /*
+    counter = 0;
     for (var kk in rawData[k]){
       var imageName = rawData[k][kk];
       counter ++;
       if (counter <= counterLimit) {
         //console.log(kk, baseUrlImg+imageName, "./pool/"+k+"/"+imageName);
-        download(baseUrlImg+imageName, "./pool/"+k+"/"+imageName, function(){});
+        download(counter, baseUrlImg+imageName, "./pool/"+k+"/"+imageName, function(){
+          console.log(counter, counterLimit, "./pool/"+k+" ..done");
+        });
       }
     }
-    zipIt('pool/'+k, 'zip/'+k+'_positive_examples.zip');
-  }
-  console.log('end')
+    */
+    //zipIt('pool/'+k, 'zip/'+k+'_positive_examples.zip');
 })
 
 
