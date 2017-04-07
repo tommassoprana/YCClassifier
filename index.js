@@ -48,25 +48,30 @@ var rmDir = function(dirPath) {
 var zipIt = function(sourcePath, savePath) {
 	var output = fs.createWriteStream(savePath);
 	var archive = archiver('zip');
-
-  console.log(sourcePath);
-  
 	output.on('close', function () {
 	    console.log("Zip done. " + archive.pointer() + ' bytes');
 	});
   
 	archive.on('error', function(err) { throw err; });
 	archive.pipe(output);
-	//archive.directory(sourcePath);
-  archive.bulk([{expand: true, cwd: sourcePath, src: ['**']}]);
+	archive.bulk([{expand: true, cwd: sourcePath, src: ['**']}]);
 	archive.finalize();
 };
 
+var shuffleArray = function(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    return array;
+}
 
 /* CODE *******************************/
 
 // Inizializzazione con pulizia della pool dei dati
-//rmDir("./pool/");
+rmDir("./pool/");
 rmDir("./zip/");
 var rawData = {};
 
@@ -80,25 +85,11 @@ csv()
   // riorganizzo i i dati in base alla classificazione
   if (typeof rawData[classification] == "undefined") rawData[classification] = [];
   rawData[classification].push(image);
-
-  //console.log(classification, image);
-  //rawData[classification].push(image);
-  /*
-  counter ++;
-	if (counter <= counterLimit) {
-		var imageName = csvRow[0]+'.jpg';
-		download(baseUrlImg+imageName, "./pool/"+imageName, function(){
-  			//console.log(rowIndex, imageName+' ..done');
-		});
-	}
-  */
 })
 .on('done',(error)=>{
-
-  //zipIt('zip/final.zip');
-  //console.log(rawData);
-
   for (var k in rawData) {
+    
+    var shuffledData = shuffleArray(rawData[k]);
     var dir = './pool/'+k;
 
     if (!fs.existsSync(dir)) {
@@ -115,18 +106,19 @@ csv()
           writeStream = fs.createWriteStream(fileName);
           request(uri).pipe(writeStream);
         }
-        cb();
+        cb(k);
     }
 
-    let requests = rawData[k].map((item) => {
+    let requests = shuffledData.map((item) => {
         return new Promise((resolve) => {
           asyncFunction(item, resolve);
         });
     })
 
-    Promise.all(requests).then(() => {
-      console.log("Zipping:..." + k);
-      //zipIt('pool/'+k, 'zip/'+k+'_positive_examples.zip');
+    Promise.all(requests).then(res => {
+      var category = res[0];
+      console.log("Zipping...",res[0]);
+      zipIt('pool/'+category, 'zip/'+category+'_positive_examples.zip');
     });
   }
 
