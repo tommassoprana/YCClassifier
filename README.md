@@ -12,7 +12,7 @@ WHAT CAN YOU DO?
 
 # 1) PREPARE DATA
 To run the test  you should first prepare the data
-  - From terminal, launch: "node 1_prpareData.js"
+  - From terminal, launch: "node 1_prepareData.js"
   
 This code will:
   - open the csv file
