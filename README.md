@@ -10,9 +10,10 @@ You can find all the variables related to the test in _configuration.js
 
 WHAT CAN YOU DO?
 
-1) PREPARE DATA
+# 1) PREPARE DATA
 To run the test  you should first prepare the data
-# from terminal, launch: "node 1_prpareData.js"
+  - From terminal, launch: "node 1_prpareData.js"
+  
 This code will:
   - open the csv file
   - check for all categories inside content
@@ -22,18 +23,17 @@ This code will:
   - download all images related to codes
   - create a zip file for each category
 
-2) CREATE AND TRAIN MY CLASSIFIER
+# 2) CREATE AND TRAIN MY CLASSIFIER
 After creating a list on valuable zip files, i can train mi classifier
-# from terminal, launch: "node 2_createAndTrainClassifier.js"
-This code will create and train my classifier.
+  - From terminal, launch: "node 2_createAndTrainClassifier.js"
+  - This code will create and train my classifier.
 
+# 3) CHECK IF MY CLASSIFIER EXISTS
+(optional) After the classifier is created it's always possible to check if it exists by launching the above command line:
+  - From terminal, launch: "node 3_getClassifiersList.js"
+  - This code will show a list of all classifiers created with my apiKey.
 
-3) (optional) CHECK IF MY CLASSIFIER EXISTS
-After the classifier is created it's always possible to check if it exists by launching the above command line:
-# from terminal, launch: "node 3_getClassifiersList.js"
-This code will show a list of all classifiers created with my apiKey.
-
-4) TRY TO CLASSIFY SOMETHING WITH MY TRAINED CLASSIFIER
+# 4) TRY TO CLASSIFY SOMETHING WITH MY TRAINED CLASSIFIER
 After the classifier is trained (2) it's always possible to ask it to try to classifiy a specific image
-# from terminal, launch: "node 4_classifyImage.js"
-This code will show a JSON with a list of categories which the Classifier thinks the image is related to. 
+  - From terminal, launch: "node 4_classifyImage.js"
+  - This code will show a JSON with a list of categories which the Classifier thinks the image is related to. 
