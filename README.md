@@ -4,11 +4,25 @@ YNAP Custom Classifier
 For this test my choice is NODE.JS 
 
 # Preparation
-Please install theese modules: fs, request, csvtojson, archiver, async and watson-developer-cloud
+If missing from git-clone please add the following directories from repo root:
+  - pool
+  - zip
+In order to run the code, theese npm modules are required:
+  - fs
+  - request
+  - csvtojson
+  - archiver
+  - async
+  - watson-developer-cloud
 
 You can find all the variables related to the test in _configuration.js
 
 WHAT CAN YOU DO?
+
+# 0) SET THE CORRECT API-KEY
+Before starting, you need to apply the correct api-key in _configuration.js
+I've sent my personal api-key to my HR relator for this test. 
+Please ask her for the correct code.
 
 # 1) PREPARE DATA
 To run the test  you should first prepare the data
