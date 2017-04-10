@@ -13,13 +13,16 @@ var fs = require('fs'),
 
 
 /* CODE *******************************/
+// to launch the Classifier we need to populate the correct "params" object
 var files = fs.readdirSync('./zip');
 if (files.length > 0) {
+	// walk on each zip file
 	for (var i = 0; i < files.length; i++) {
 		var filePath = './zip/' + files[i];
 		if (fs.statSync(filePath).isFile()) {
 			var category = files[i].slice(0, -4),
 			    positiveName = category + "_positive_examples";
+			// adding the correct params
 			params[positiveName] = fs.createReadStream(filePath);
 		}
 	}
